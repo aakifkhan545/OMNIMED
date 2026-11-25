@@ -1,0 +1,722 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eaf5ef">
+<title>OMNIMED — Advanced Diagnostics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{--bg:#eaf5ef;--paper:#f6faf7;--green:#176b55;--deep:#064b3b;--lime:#e9ff70;--ink:#17231f;--muted:#728078;--line:rgba(23,55,43,.14);--radius:22px}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{width:min(1280px,calc(100% - 88px));margin:auto}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700}
+.section{padding:125px 0}
+.display{font:500 clamp(48px,6.1vw,88px)/.99 Manrope,sans-serif;letter-spacing:-.075em;margin:0}
+.subtle{color:var(--muted);line-height:1.65}
+.pill{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:99px;padding:15px 21px;font-size:13px;font-weight:700;transition:.3s}
+.pill.dark{background:var(--deep);color:white;border-color:var(--deep)}
+.pill:hover{background:var(--lime);color:var(--deep);border-color:var(--lime);transform:translateY(-3px)}
+.arrow{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;background:var(--lime);color:var(--deep);font-size:16px;transition:transform .35s}
+.pill:hover .arrow,.service-card:hover .arrow{transform:rotate(45deg)}
+
+header{position:fixed;z-index:20;top:0;left:0;width:100%;padding:20px 0;transition:background .3s,padding .3s}
+header.scrolled{background:rgba(234,245,239,.9);backdrop-filter:blur(16px);padding:12px 0;border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between}
+.logo{font:800 24px Manrope;letter-spacing:-.07em}
+.logo span{color:var(--green)}
+.navlinks{display:flex;align-items:center;gap:35px;font-size:13px;color:#43534b}
+.navlinks a{position:relative}
+.navlinks a:after{content:"";position:absolute;bottom:-7px;left:0;width:0;height:1px;background:var(--green);transition:.3s}
+.navlinks a:hover:after{width:100%}
+.menu{display:none;border:0;background:none;font-size:25px}
+
+.hero{padding:155px 0 85px;min-height:100vh}
+.hero-top{display:grid;grid-template-columns:1.5fr .5fr;gap:7%;align-items:end;margin-bottom:54px}
+.hero h1{max-width:900px}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero-aside{max-width:250px;padding-bottom:8px}
+.hero-aside p{font-size:14px;line-height:1.7;color:var(--muted);margin:0 0 20px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr;gap:14px}
+.service-card{height:390px;border-radius:var(--radius);overflow:hidden;position:relative;background:#c7d8ce;color:white;isolation:isolate}
+.service-card:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(4,35,25,.72));z-index:1}
+.service-card img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.service-card:hover img{transform:scale(1.055)}
+.card-info{position:absolute;z-index:2;left:25px;right:25px;bottom:24px;display:flex;align-items:end;justify-content:space-between}
+.card-info h3{font:600 23px/1.1 Manrope;letter-spacing:-.04em;max-width:220px;margin:0}
+.card-info small{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;opacity:.8}
+
+.marquee{padding:19px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;color:var(--green);font:700 12px Manrope;letter-spacing:.18em;text-transform:uppercase}
+.marquee span{display:inline-block;padding-left:30px;animation:marquee 28s linear infinite}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+.services{background:var(--paper)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:48px}
+.section-head .display{max-width:700px}
+.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.large-card{position:relative;height:490px;overflow:hidden;border-radius:var(--radius);background:#d3e1d8}
+.large-card img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.large-card:hover img{transform:scale(1.045)}
+.large-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(4,35,25,.72))}
+.large-card .card-info h3{font-size:28px}
+
+.about{display:grid;grid-template-columns:1fr .8fr;gap:9%;align-items:center}
+.about-image{height:620px;border-radius:var(--radius);overflow:hidden;position:relative}
+.about-image img{width:100%;height:100%;object-fit:cover}
+.about-copy .display{font-size:clamp(42px,5vw,68px);margin:20px 0 25px}
+.about-copy p{max-width:440px;font-size:15px;color:var(--muted);line-height:1.8}
+.about-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+
+.stat-band{background:var(--deep);color:white;padding:70px 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:30px}
+.stat{border-left:1px solid rgba(255,255,255,.2);padding-left:25px}
+.stat strong{font:500 clamp(42px,5vw,66px) Manrope;letter-spacing:-.07em;color:var(--lime)}
+.stat p{font-size:12px;color:rgba(255,255,255,.65);margin:8px 0 0}
+
+.team{background:var(--paper)}
+.team-grid{display:grid;grid-template-columns:.85fr 1fr 1fr 1fr;gap:14px}
+.team-intro{background:var(--deep);color:white;border-radius:var(--radius);padding:30px;display:flex;flex-direction:column;justify-content:space-between;min-height:440px}
+.team-intro h2{font:500 43px/1.05 Manrope;letter-spacing:-.06em;margin:20px 0}
+.team-intro p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.65)}
+.doctor{min-width:0}
+.doctor-photo{height:350px;border-radius:var(--radius);overflow:hidden;background:#d6e2da}
+.doctor-photo img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.doctor:hover img{transform:scale(1.05)}
+.doctor h3{font:600 18px Manrope;letter-spacing:-.04em;margin:18px 0 4px}
+.doctor p{font-size:12px;color:var(--muted);margin:0}
+.doctor .social{display:inline-flex;margin-top:12px;color:var(--green);font-size:12px}
+
+.contact{background:var(--bg);padding:120px 0 100px;overflow:hidden}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8%;align-items:center}
+.contact-left{position:relative;min-height:530px;display:flex;flex-direction:column;justify-content:center}
+.contact-left h2{font:500 clamp(46px,5.5vw,76px)/1 Manrope;letter-spacing:-.075em;max-width:590px;position:relative;z-index:2}
+.contact-left p{max-width:350px;color:var(--muted);line-height:1.7;font-size:14px;position:relative;z-index:2}
+.dna-wrap{position:absolute;inset:0 -10% 0 4%;opacity:.92;pointer-events:none}
+.dna-wrap canvas{width:100%;height:100%;display:block}
+.form-card{background:white;border-radius:26px;padding:38px;box-shadow:0 18px 60px rgba(15,65,45,.06);position:relative;z-index:2}
+.form-card h3{font:600 27px Manrope;letter-spacing:-.05em;margin:0 0 8px}
+.form-card>p{font-size:13px;color:var(--muted);margin:0 0 28px}
+.field{margin:0 0 17px}
+.field label{display:block;font-size:11px;color:#69776f;margin-bottom:8px}
+.field input,.field textarea{width:100%;border:1px solid #dce7e0;border-radius:10px;background:#fbfdfb;padding:14px 15px;outline:none;font-size:13px;transition:border .2s,box-shadow .2s}
+.field textarea{height:105px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(23,107,85,.08)}
+.form-card button{width:100%;border:0;background:var(--deep);color:white;border-radius:99px;padding:16px;font-weight:700;font-size:13px;transition:.3s}
+.form-card button:hover{background:var(--green);transform:translateY(-2px)}
+.form-status{font-size:12px;color:var(--green);min-height:18px;margin-top:12px}
+
+footer{background:var(--deep);color:white;padding:35px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.foot small{color:rgba(255,255,255,.55);font-size:11px}
+.reveal{opacity:0;transform:translateY(35px)}
+.loaded .reveal{opacity:1;transform:none;transition:opacity .8s,transform .8s}
+
+@media(max-width:900px){
+.wrap{width:min(100% - 44px,700px)}
+.section{padding:90px 0}
+.hero{padding-top:135px}
+.hero-top{grid-template-columns:1fr;gap:24px}
+.hero-aside{max-width:440px}
+.hero-grid{grid-template-columns:1fr 1fr}
+.service-card{height:330px}
+.service-card:first-child{grid-column:span 2;height:390px}
+.about{grid-template-columns:1fr;gap:40px}
+.about-image{height:500px}
+.team-grid{grid-template-columns:1fr 1fr}
+.team-intro{min-height:350px}
+.contact-grid{grid-template-columns:1fr;gap:30px}
+.contact-left{min-height:430px}
+.dna-wrap{inset:0 0 0 20%}
+.stats{grid-template-columns:1fr 1fr;row-gap:45px}
+}
+
+@media(max-width:600px){
+.wrap{width:calc(100% - 36px)}
+.section{padding:72px 0}
+.navlinks{display:none;position:absolute;top:65px;left:18px;right:18px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;flex-direction:column;align-items:flex-start;gap:22px}
+.navlinks.open{display:flex}
+.menu{display:block}
+.nav>.pill{display:none}
+.hero{padding:120px 0 65px;min-height:auto}
+.display{font-size:clamp(45px,13vw,65px)}
+.hero-grid,.service-grid{grid-template-columns:1fr}
+.service-card,.service-card:first-child{grid-column:auto;height:330px}
+.section-head{align-items:flex-start;flex-direction:column}
+.large-card{height:390px}
+.about-image{height:390px}
+.about-copy .display{font-size:48px}
+.stats{gap:32px 15px}
+.stat{padding-left:15px}
+.stat strong{font-size:45px}
+.team-grid{grid-template-columns:1fr 1fr}
+.team-intro{grid-column:span 2;min-height:300px}
+.doctor-photo{height:250px}
+.doctor h3{font-size:15px}
+.contact{padding:75px 0}
+.contact-left{min-height:390px}
+.contact-left h2{font-size:49px}
+.dna-wrap{inset:5% -18% 0 10%;opacity:.7}
+.form-card{padding:25px}
+.foot{align-items:flex-start;flex-direction:column}
+}
+
+@media(prefers-reduced-motion:reduce){
+*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+.reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+
+<body>
+
+<header id="header">
+<div class="wrap nav">
+<a class="logo" href="#home">omni<span>med</span>.</a>
+<nav class="navlinks" id="navlinks">
+<a href="#home">Home</a>
+<a href="#about">About</a>
+<a href="#services">Services</a>
+<a href="#team">Our team</a>
+<a href="#contact">Contact</a>
+</nav>
+<a class="pill dark" href="#contact">Contact us <span class="arrow">↗</span></a>
+<button class="menu" id="menu" aria-label="Open menu">☰</button>
+</div>
+</header>
+
+<main>
+
+<section class="hero" id="home">
+<div class="wrap">
+<div class="hero-top">
+<div>
+<div class="eyebrow reveal">A better way to care for you</div>
+<h1 class="display reveal">Everything your diagnosis needs, <em>under one roof.</em></h1>
+</div>
+<div class="hero-aside reveal">
+<p>Thoughtful healthcare, advanced diagnostics and specialists who put your wellbeing first.</p>
+<a class="pill" href="#services">Explore our services <span class="arrow">↗</span></a>
+</div>
+</div>
+
+<div class="hero-grid">
+
+<a class="service-card reveal" href="#services">
+<img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1100&q=85" alt="Doctor consulting a patient">
+<div class="card-info">
+<div><small>01 / Prevention</small><h3>Preventive Health Check-ups</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+<a class="service-card reveal" href="#services">
+<img src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=900&q=85" alt="Medical diagnostic equipment">
+<div class="card-info">
+<div><small>02 / Precision</small><h3>Diagnostic Imaging</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+<a class="service-card reveal" href="#services">
+<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=85" alt="Genetic testing in laboratory">
+<div class="card-info">
+<div><small>03 / Discovery</small><h3>Genetic Testing</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+</div>
+</div>
+</section>
+
+<div class="marquee">
+<span>PREVENTION FIRST　✳　PRECISION DIAGNOSTICS　✳　CARE THAT CONNECTS　✳　PREVENTION FIRST　✳　PRECISION DIAGNOSTICS　✳　CARE THAT CONNECTS　✳　</span>
+<span>PREVENTION FIRST　✳　PRECISION DIAGNOSTICS　✳　CARE THAT CONNECTS　✳　PREVENTION FIRST　✳　PRECISION DIAGNOSTICS　✳　CARE THAT CONNECTS　✳　</span>
+</div>
+
+<section class="section services" id="services">
+<div class="wrap">
+<div class="section-head">
+<div>
+<div class="eyebrow reveal">What we do</div>
+<h2 class="display reveal">Care for every<br>part of you.</h2>
+</div>
+<p class="subtle reveal" style="max-width:300px">From everyday testing to specialist expertise, find the care you need in one connected place.</p>
+</div>
+
+<div class="service-grid">
+
+<a class="large-card reveal" href="#contact">
+<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1000&q=85" alt="Genetic testing">
+<div class="card-info">
+<div><small>01 / Explore</small><h3>Genetic Testing</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+<a class="large-card reveal" href="#contact">
+<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1000&q=85" alt="Laboratory specialist">
+<div class="card-info">
+<div><small>02 / Discover</small><h3>Laboratory</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+<a class="large-card reveal" href="#contact">
+<img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1000&q=85" alt="Specialist doctor">
+<div class="card-info">
+<div><small>03 / Connect</small><h3>Specialist Care</h3></div>
+<span class="arrow">↗</span>
+</div>
+</a>
+
+</div>
+</div>
+</section>
+
+<section class="section" id="about">
+<div class="wrap about">
+
+<div class="about-image reveal">
+<img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=1300&q=90" alt="Healthcare professionals working together">
+</div>
+
+<div class="about-copy">
+<div class="eyebrow reveal">A little about OMNIMED</div>
+<h2 class="display reveal">Your health is our <span style="color:var(--green)">whole world.</span></h2>
+<p class="reveal">We bring people, technology and expertise together to make quality healthcare feel simpler. Every detail is designed around one thing: helping you feel confident about your health.</p>
+<p class="reveal">From your first question to your next step, our team is here to guide you with clarity, compassion and care.</p>
+<div class="about-actions reveal">
+<a class="pill dark" href="#contact">Book a consultation <span class="arrow">↗</span></a>
+<a class="pill" href="#services">View services <span class="arrow">↗</span></a>
+</div>
+</div>
+
+</div>
+</section>
+
+<section class="stat-band">
+<div class="wrap stats">
+<div class="stat reveal"><strong data-count="15">0</strong><p>Years of combined experience</p></div>
+<div class="stat reveal"><strong data-count="98" data-suffix="%">0</strong><p>Patient satisfaction</p></div>
+<div class="stat reveal"><strong data-count="24">0</strong><p>Care and support</p></div>
+<div class="stat reveal"><strong data-count="12">0</strong><p>Specialist departments</p></div>
+</div>
+</section>
+
+<section class="section team" id="team">
+<div class="wrap">
+
+<div class="section-head">
+<div>
+<div class="eyebrow reveal">People behind your care</div>
+<h2 class="display reveal">Meet the experts.</h2>
+</div>
+<p class="subtle reveal" style="max-width:290px">A team of thoughtful specialists, united by a shared commitment to better health.</p>
+</div>
+
+<div class="team-grid">
+
+<div class="team-intro reveal">
+<div class="eyebrow" style="color:var(--lime)">The OMNIMED team</div>
+<h2>Care starts with people.</h2>
+<p>Experienced professionals. A human approach. Care that sees the whole you.</p>
+<a class="pill" style="width:max-content;color:white;border-color:rgba(255,255,255,.3)" href="#contact">Meet our team <span class="arrow">↗</span></a>
+</div>
+
+<article class="doctor reveal">
+<div class="doctor-photo">
+<img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=700&q=85" alt="Portrait of a female doctor">
+</div>
+<h3>Dr. Mohd Abrar Hussain</h3>
+<p>Lead Physician</p>
+<a class="social" href="#contact" aria-label="Contact Dr Mohd Abrar Hussain">↗ Connect</a>
+</article>
+
+<article class="doctor reveal">
+<div class="doctor-photo">
+<img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=700&q=85" alt="Portrait of a male doctor">
+</div>
+<h3>Dr. Murtuza Abdul Aziz Khan</h3>
+<p>Diagnostic Specialist</p>
+<a class="social" href="#contact" aria-label="Contact Dr Ethan">↗ Connect</a>
+</article>
+
+<article class="doctor reveal">
+<div class="doctor-photo">
+<img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=700&q=85" alt="Portrait of a female medical specialist">
+</div>
+<h3>Dr. Munawar Qureshi</h3>
+<p>Clinical Geneticist</p>
+<a class="social" href="#contact" aria-label="Contact Dr Sophia">↗ Connect</a>
+</article>
+
+</div>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<div class="wrap contact-grid">
+
+<div class="contact-left">
+<div class="dna-wrap"><canvas id="dna"></canvas></div>
+<div class="eyebrow reveal">Let's find your next step</div>
+<h2 class="reveal">Not sure which specialist you need? <span style="color:var(--green)">Ask us.</span></h2>
+<p class="reveal">Tell us a little about what you need. Our care team will help point you in the right direction.</p>
+</div>
+
+<form class="form-card reveal" id="contactForm">
+<h3>Request a callback</h3>
+<p>Leave your details and we'll be in touch.</p>
+
+<div class="field">
+<label for="name">Your name</label>
+<input id="name" name="name" autocomplete="name" placeholder="e.g. Alex Morgan" required minlength="2">
+</div>
+
+<div class="field">
+<label for="phone">Phone number</label>
+<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+91 00000 00000" required pattern="[+0-9() -]{7,18}">
+</div>
+
+<div class="field">
+<label for="email">Email address</label>
+<input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+</div>
+
+<div class="field">
+<label for="message">How can we help?</label>
+<textarea id="message" name="message" placeholder="Tell us what you're looking for..." required minlength="5"></textarea>
+</div>
+
+<button type="submit">Send request&nbsp;&nbsp; ↗</button>
+<div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+</form>
+
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="wrap foot">
+<a class="logo" href="#home">omni<span style="color:var(--lime)">med</span>.</a>
+<small>Thoughtful healthcare, all under one roof.</small>
+<small>© <span id="year"></span> OMNIMED Diagnostics</small>
+</div>
+</footer>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import Lenis from 'https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm';
+import {gsap} from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js';
+import {ScrollTrigger} from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger.js';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lenis=reduce?null:new Lenis({duration:1.15,smoothWheel:true});
+
+if(lenis){
+lenis.on('scroll',ScrollTrigger.update);
+gsap.ticker.add(t=>lenis.raf(t*1000));
+gsap.ticker.lagSmoothing(0);
+}
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+const target=document.querySelector(a.getAttribute('href'));
+if(target){
+e.preventDefault();
+lenis?lenis.scrollTo(target,{offset:-75}):target.scrollIntoView({behavior:'smooth'});
+document.querySelector('#navlinks').classList.remove('open');
+}
+}));
+
+const header=document.querySelector('#header');
+addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>30),{passive:true});
+
+document.querySelector('#menu').addEventListener('click',()=>{
+document.querySelector('#navlinks').classList.toggle('open');
+});
+
+document.querySelector('#year').textContent=new Date().getFullYear();
+document.body.classList.add('loaded');
+
+if(!reduce){
+gsap.utils.toArray('.reveal').forEach(el=>{
+gsap.fromTo(el,{y:35,autoAlpha:0},{
+y:0,autoAlpha:1,duration:.85,ease:'power3.out',
+scrollTrigger:{trigger:el,start:'top 90%',once:true}
+});
+});
+
+document.querySelectorAll('[data-count]').forEach(el=>{
+const end=+el.dataset.count;
+ScrollTrigger.create({
+trigger:el,
+start:'top 90%',
+once:true,
+onEnter:()=>{
+gsap.to({v:0},{
+v:end,duration:1.6,ease:'power2.out',
+onUpdate:function(){
+el.textContent=Math.round(this.targets()[0].v)+(el.dataset.suffix||'');
+}
+});
+}
+});
+});
+}
+
+document.querySelector('#contactForm').addEventListener('submit',e=>{
+e.preventDefault();
+const form=e.currentTarget;
+if(!form.reportValidity())return;
+document.querySelector('#formStatus').textContent='Thank you — your request is ready. Connect this form to your email or backend to receive submissions.';
+form.reset();
+});
+
+// Interactive procedural DNA-like particle field (Three.js)
+
+const canvas=document.querySelector('#dna');
+const host=canvas.parentElement;
+
+let renderer,scene,camera,points,lines,positions,base;
+let mouse={x:0,y:0},target={x:0,y:0};
+let clock=new THREE.Clock(),raf=0;
+
+function initDNA(){
+try{
+
+const w=host.clientWidth,h=host.clientHeight;
+if(!w||!h)return;
+
+renderer=new THREE.WebGLRenderer({
+canvas,alpha:true,antialias:true,powerPreference:'low-power'
+});
+
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
+renderer.setSize(w,h,false);
+
+scene=new THREE.Scene();
+camera=new THREE.PerspectiveCamera(42,w/h,.1,100);
+camera.position.z=15;
+
+const mobile=innerWidth<650;
+const count=mobile?1700:4300;
+
+positions=new Float32Array(count*3);
+base=new Float32Array(count*3);
+
+// A twisted, branching ribbon of points, with layered depth and a gentle helical spine.
+
+for(let i=0;i<count;i++){
+const t=i/count*Math.PI*8.5;
+const strand=i%3;
+const along=(i/count-.5)*13.5;
+const radius=1.05+0.42*Math.sin(t*.37)+.24*Math.sin(t*1.7+strand);
+const angle=t+strand*2.094;
+const branch=.42*Math.sin(t*2.8+strand*1.7);
+
+const x=Math.cos(angle)*radius+branch;
+const y=along+Math.sin(t*.55)*.38;
+const z=Math.sin(angle)*radius*.58+(Math.random()-.5)*.65;
+
+const j=i*3;
+base[j]=positions[j]=x;
+base[j+1]=positions[j+1]=y;
+base[j+2]=positions[j+2]=z;
+}
+
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+
+const colors=new Float32Array(count*3);
+const sizes=new Float32Array(count);
+
+for(let i=0;i<count;i++){
+const t=i/count;
+const c=new THREE.Color().setHSL(.34+t*.08,.66,.38+.15*Math.sin(t*12));
+
+colors[i*3]=c.r;
+colors[i*3+1]=c.g;
+colors[i*3+2]=c.b;
+sizes[i]=.7+Math.random()*1.8;
+}
+
+geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+geo.setAttribute('size',new THREE.BufferAttribute(sizes,1));
+
+const mat=new THREE.ShaderMaterial({
+transparent:true,
+depthWrite:false,
+vertexColors:true,
+uniforms:{uTime:{value:0}},
+vertexShader:`
+attribute float size;
+varying vec3 vColor;
+uniform float uTime;
+void main(){
+vColor=color;
+vec4 mv=modelViewMatrix*vec4(position,1.);
+gl_PointSize=size*(260.0/-mv.z);
+gl_Position=projectionMatrix*mv;
+}`,
+fragmentShader:`
+varying vec3 vColor;
+void main(){
+float d=length(gl_PointCoord-.5);
+if(d>.5)discard;
+float glow=smoothstep(.5,0.0,d);
+gl_FragColor=vec4(vColor,glow*.82);
+}`
+});
+
+points=new THREE.Points(geo,mat);
+scene.add(points);
+
+// Sparse connective filaments, linking neighbouring particles in each organic strand.
+
+const seg=[];
+
+for(let i=0;i<count-3;i+=3){
+const a=i*3,b=(i+3)*3;
+seg.push(
+base[a],base[a+1],base[a+2],
+base[b],base[b+1],base[b+2]
+);
+}
+
+const lg=new THREE.BufferGeometry();
+lg.setAttribute('position',new THREE.Float32BufferAttribute(seg,3));
+
+lines=new THREE.LineSegments(
+lg,
+new THREE.LineBasicMaterial({
+color:0x6eaa79,
+transparent:true,
+opacity:.17
+})
+);
+
+scene.add(lines);
+
+const onMove=e=>{
+const r=canvas.getBoundingClientRect();
+target.x=((e.clientX-r.left)/r.width-.5)*2;
+target.y=-((e.clientY-r.top)/r.height-.5)*2;
+};
+
+host.addEventListener('pointermove',onMove);
+
+const onLeave=()=>{
+target.x=0;
+target.y=0;
+};
+
+host.addEventListener('pointerleave',onLeave);
+
+const animate=()=>{
+raf=requestAnimationFrame(animate);
+
+const time=clock.getElapsedTime();
+
+mouse.x+=(target.x-mouse.x)*.035;
+mouse.y+=(target.y-mouse.y)*.035;
+
+const arr=geo.attributes.position.array;
+
+for(let i=0;i<count;i++){
+const j=i*3;
+const x=base[j],y=base[j+1],z=base[j+2];
+
+const wave=
+Math.sin(y*.82+time*.72+x*.5)*.17+
+Math.sin(y*1.6-time*.38+z)*.08;
+
+const dx=x-mouse.x*2.1;
+const dy=y-mouse.y*2.4;
+const dist=Math.sqrt(dx*dx+dy*dy)+.001;
+const influence=Math.exp(-dist*dist*.28)*.32;
+
+arr[j]=x+
+Math.cos(time*.45+y*.22)*.13+
+Math.cos(time*1.3+y*.6)*wave+
+dx/dist*influence;
+
+arr[j+1]=y+
+Math.sin(time*.5+x*.3)*.12+
+Math.sin(time*.9+x)*wave+
+dy/dist*influence;
+
+arr[j+2]=z+
+Math.sin(time*.7+y*.4+x)*.15+
+Math.cos(time*.6+x)*wave;
+}
+
+geo.attributes.position.needsUpdate=true;
+
+points.rotation.y=mouse.x*.09+Math.sin(time*.18)*.055;
+points.rotation.x=mouse.y*.045+Math.sin(time*.14)*.025;
+
+lines.rotation.copy(points.rotation);
+
+renderer.render(scene,camera);
+};
+
+animate();
+
+const resize=()=>{
+const w=host.clientWidth,h=host.clientHeight;
+if(!renderer||!w||!h)return;
+
+camera.aspect=w/h;
+camera.updateProjectionMatrix();
+renderer.setSize(w,h,false);
+};
+
+new ResizeObserver(resize).observe(host);
+
+}catch(err){
+console.warn('Particle visual unavailable:',err);
+}
+}
+
+if(!reduce)initDNA();
+else canvas.style.display='none';
+
+addEventListener('pagehide',()=>{
+cancelAnimationFrame(raf);
+renderer?.dispose();
+points?.geometry.dispose();
+lines?.geometry.dispose();
+});
+</script>
+<script>
+  const contactForm = document.querySelector("#contact-form");
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      alert(
+        "Thank you for contacting OMNIMED!\n\n" +
+        "We have received your details. Our team will contact you shortly."
+      );
+
+      contactForm.reset();
+    });
+  }
+</script>
+</body>
+</html>
